@@ -29,7 +29,7 @@ scrapers/joburi_*.json
 
 # Firebase config
 firebase.json
-serviceAccountKey.json
+firebase-service-account.json
 
 # PyInstaller
 build/
