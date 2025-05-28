@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+*.py[cod]
+*.sqlite3
+*.db
+
+# Environment
+.env
+venv/
+.venv/
+.env.*
+
+# IDEs
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# Docker
+*.pid
+*.sock
+*.tar
+*.bak
+Dockerfile
+*.db
+*.json
+scrapers/joburi_*.json
+
+# Firebase config
+firebase.json
+serviceAccountKey.json
+
+# PyInstaller
+build/
+dist/
+*.spec
+
+# Others
+.cache/

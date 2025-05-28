@@ -1,0 +1,15 @@
+# Ignoră mediul virtual local
+venv/
+
+# Cache Python
+__pycache__/
+*.pyc
+
+# Fișiere sensibile
+.env
+firebase-service-account.json
+
+# Alte fișiere inutile
+*.log
+*.sqlite3
+.DS_Store

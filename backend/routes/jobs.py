@@ -1,11 +1,14 @@
 from fastapi import APIRouter, Query
 from scrapers.bestjobs import scrape_bestjobs
 from scrapers.ejobs import scrape_ejobs
-from scrapers.hipo import scrape_hipo_brasov
+from scrapers.hipo import scrape_hipo
 from scrapers.jooble import scrape_jooble
 from services.firebase import save_job
 import threading
 import json
+import subprocess
+from pathlib import Path
+import sys
 
 
 router = APIRouter()
@@ -30,35 +33,45 @@ def run_all_scrapers(keyword: str = Query(...), location: str = Query(...)):
     print(f"[INFO] Pornim scraping pentru: keyword={keyword}, location={location}")
     jobs = []
 
-#    try:
-#        results = scrape_bestjobs(limit=50)
-#        print(f"[INFO] BestJobs: {len(results)} joburi")
-#        jobs += results
-#    except Exception as e:
-#        print("[ERROR] bestjobs:", e)
-
-#    try:
-#        results = run_scrape_in_thread(scrape_ejobs, 30, 2)
-#        print(f"[INFO] eJobs: {len(results)} joburi")
-#        jobs += results
-#    except Exception as e:
-#        print("[ERROR] ejobs threading:", e)
-
+# Rulează scraper BestJobs
     try:
-        results = run_scrape_in_thread(scrape_hipo_brasov)
-        print(f"[INFO] Hipo: {len(results)} joburi")
-        jobs += results
-    except Exception as e:
-        print("[ERROR] hipo threading:", e)
+        python_exec = sys.executable
+        subprocess.run([python_exec, "scrapers/bestjobs_runner.py", keyword, location], check=True)
 
-    try:
-        results = scrape_jooble(keyword, location)
-        print(f"[INFO] Jooble: {len(results)} joburi")
-        jobs += results
+        path = Path("scrapers/joburi_bestjobs.json")
+        if path.exists():
+            with open(path, "r", encoding="utf-8") as f:
+                bestjobs = json.load(f)
+                print(f"[INFO] BestJobs: {len(bestjobs)} joburi")
+                jobs += bestjobs
     except Exception as e:
-        print("[ERROR] jooble:", e)
+        print("[ERROR] bestjobs subprocess:", e)
 
     print(f"[INFO] Total joburi extrase: {len(jobs)}")
+
+    try:
+        python_exec = sys.executable
+        subprocess.run([python_exec, "scrapers/hipo_runner.py", keyword], check=True)
+
+        path = Path("scrapers/joburi_brasov.json")
+        if path.exists():
+            with open(path, "r", encoding="utf-8") as f:
+                hipo_jobs = json.load(f)
+                print(f"[INFO] Hipo: {len(hipo_jobs)} joburi")
+                jobs += hipo_jobs
+    except Exception as e:
+        print("[ERROR] hipo subprocess:", e)
+
+    print(f"[INFO] Total joburi extrase: {len(jobs)}")
+
+#    try:
+#        results = scrape_jooble(keyword, location)
+#        print(f"[INFO] Jooble: {len(results)} joburi")
+#        jobs += results
+#    except Exception as e:
+#        print("[ERROR] jooble:", e)
+
+#    print(f"[INFO] Total joburi extrase: {len(jobs)}")
 
     for job in jobs:
         try:
@@ -70,3 +83,14 @@ def run_all_scrapers(keyword: str = Query(...), location: str = Query(...)):
         json.dump(jobs, f, ensure_ascii=False, indent=2)
 
     return {"count": len(jobs), "jobs": jobs}
+
+@router.get("/jobs")
+def get_saved_jobs():
+    from services.firebase import db
+    try:
+        jobs_ref = db.collection("jobs").stream()
+        jobs = [doc.to_dict() for doc in jobs_ref]
+        return {"count": len(jobs), "jobs": jobs}
+    except Exception as e:
+        print("[ERROR] citire Firebase:", e)
+        return {"count": 0, "jobs": [], "error": str(e)}
