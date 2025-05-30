@@ -1,4 +1,3 @@
-// frontend/src/components/Layout/Header.js
 import React from 'react';
 import { AppBar, Toolbar, Typography, Button, Box } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
@@ -11,10 +10,9 @@ function Header() {
   const handleLogout = async () => {
     try {
       await logout();
-      navigate('/login'); // Redirecționează către pagina de login după logout
+      navigate('/login');
     } catch (error) {
       console.error('Failed to log out', error);
-      // Poți afișa un mesaj de eroare utilizatorului
     }
   };
 
@@ -29,10 +27,8 @@ function Header() {
         <Box>
           {currentUser ? (
             <>
-              {/* Linkuri vizibile doar dacă ești autentificat */}
               <Button color="inherit" component={Link} to="/dashboard">Dashboard</Button>
               <Button color="inherit" component={Link} to="/profile">Profil</Button>
-              {/* <Button color="inherit" component={Link} to="/forms/personal">Formulare</Button> */} {/* Opțional, dacă vrei un link direct */}
               <Typography variant="body2" component="span" sx={{ mx: 2 }}>
                 Salut, {currentUser.email}
               </Typography>
@@ -40,7 +36,6 @@ function Header() {
             </>
           ) : (
             <>
-              {/* Linkuri vizibile doar dacă NU ești autentificat */}
               <Button color="inherit" component={Link} to="/login">Autentificare</Button>
               <Button color="inherit" component={Link} to="/register">Înregistrare</Button>
             </>

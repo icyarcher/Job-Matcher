@@ -1,14 +1,12 @@
-// frontend/src/theme.js
 import { createTheme } from '@mui/material/styles';
 
 const theme = createTheme({
-  // Poți personaliza paleta de culori, tipografia, etc. aici
   palette: {
     primary: {
-      main: '#1976d2', // O nuanță de albastru
+      main: '#1976d2',
     },
     secondary: {
-      main: '#dc004e', // O nuanță de roșu
+      main: '#dc004e',
     },
   },
   typography: {
@@ -24,12 +22,12 @@ const theme = createTheme({
       fontSize: '1rem',
     },
   },
-  // Poți adăuga alte personalizări pentru componente specifice
+
   components: {
     MuiButton: {
       styleOverrides: {
         root: {
-          textTransform: 'none', // Butoanele nu vor fi uppercase implicit
+          textTransform: 'none',
         },
       },
     },

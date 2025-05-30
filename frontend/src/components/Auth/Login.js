@@ -1,4 +1,3 @@
-// frontend/src/components/Auth/Login.js
 import React, { useState } from 'react';
 import { Container, TextField, Button, Typography, Box, Alert } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
@@ -19,10 +18,10 @@ function Login() {
       setError('');
       setLoading(true);
       await login(email, password);
-      navigate('/dashboard'); // Redirecționează către dashboard după autentificare
+      navigate('/dashboard');
     } catch (err) {
-      setError('Failed to log in. Check your email and password.'); // Mesaj generic pentru securitate
-      console.error(err); // Log-ează eroarea completă în consolă
+      setError('Failed to log in. Check your email and password.');
+      console.error(err);
     }
     setLoading(false);
   };

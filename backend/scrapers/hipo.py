@@ -2,22 +2,24 @@ from playwright.sync_api import sync_playwright
 import json
 from pathlib import Path
 
-def scrape_hipo(keyword: str = "") -> list[dict]:
+def scrape_hipo(location: str = "brasov", keyword: str = "") -> list[dict]:
     job_list = []
     keyword = keyword.lower().strip()
+    location = location.lower().replace(" ", "-").strip()
 
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
         page = browser.new_page()
 
-        base_url = "https://www.hipo.ro/locuri-de-munca/cautajob/Toate-Domeniile/Brasov"
+        base_url = f"https://www.hipo.ro/locuri-de-munca/cautajob/Toate-Domeniile/{location}"
+        print(f"[INFO] Accesez: {base_url}")
         page.goto(base_url, timeout=60000)
 
         page_num = 1
         max_pages = 5  # limită de siguranță
 
         while True:
-            print(f"[INFO] Procesăm pagina {page_num}...")
+            print(f"[INFO] Procesam pagina {page_num}...")
 
             page.wait_for_timeout(3000)
             job_links = page.query_selector_all("a.job-title")
@@ -42,17 +44,17 @@ def scrape_hipo(keyword: str = "") -> list[dict]:
                         company = "N/A"
 
                     try:
-                        location = page.evaluate(
+                        location_found = page.evaluate(
                             "(el) => { const badge = el.querySelector('span.badge-type'); return badge ? badge.innerText.trim() : 'N/A'; }",
                             wrapper
                         )
                     except:
-                        location = "N/A"
+                        location_found = "N/A"
 
                     job_list.append({
                         "title": title,
                         "company": company,
-                        "location": location,
+                        "location": location_found,
                         "link": full_link,
                         "source": "Hipo"
                     })
@@ -61,7 +63,6 @@ def scrape_hipo(keyword: str = "") -> list[dict]:
                     print(f"[EROARE] la extragerea unui job: {e}")
                     continue
 
-            # Găsim linkul către pagina următoare
             try:
                 next_el = page.query_selector("a.page-next[rel='next']")
                 if next_el and page_num < max_pages:
@@ -72,7 +73,7 @@ def scrape_hipo(keyword: str = "") -> list[dict]:
                         continue
                 break
             except Exception as e:
-                print(f"[INFO] Sfârșit paginare sau eroare: {e}")
+                print(f"[INFO] Sfarsit paginare sau eroare: {e}")
                 break
 
         browser.close()

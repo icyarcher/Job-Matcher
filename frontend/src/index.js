@@ -1,8 +1,7 @@
-// frontend/src/index.js
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
-import './index.css'; // Poate fi fișierul CSS implicit sau propriul tău
+import './index.css';
 import { ThemeProvider } from '@mui/material/styles';
 import theme from './theme';
 import { AuthProvider } from './contexts/AuthContext';

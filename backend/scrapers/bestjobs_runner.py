@@ -4,14 +4,14 @@ from bestjobs import scrape_bestjobs
 
 def main():
     if len(sys.argv) < 3:
-        print("[EROARE] Te rog oferă argumentele: <keyword> <location>")
+        print("[EROARE] Te rog ofera argumentele: <keyword> <location>")
         print("Exemplu: python bestjobs_runner.py python Brasov")
         sys.exit(1)
 
     keyword = sys.argv[1]
     location = sys.argv[2]
 
-    print(f"[INFO] Căutăm joburi BestJobs cu keyword: '{keyword}', location: '{location}'")
+    print(f"[INFO] Cautam joburi BestJobs cu keyword: '{keyword}', location: '{location}'")
 
     filtered_jobs = scrape_bestjobs(keyword, location)
 

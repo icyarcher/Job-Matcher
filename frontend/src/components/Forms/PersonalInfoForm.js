@@ -1,4 +1,3 @@
-// frontend/src/components/Forms/PersonalInfoForm.js
 import React, { useState } from 'react';
 import { Container, TextField, Button, Typography, Box, Paper, Grid } from '@mui/material';
 
@@ -8,7 +7,6 @@ function PersonalInfoForm() {
     lastName: '',
     phone: '',
     address: '',
-    // Adaugă alte câmpuri necesare
   });
 
   const handleChange = (e) => {
@@ -22,7 +20,6 @@ function PersonalInfoForm() {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log('Personal Info Submitted:', formData);
-    // Aici ai trimite datele către backend/Firestore etc.
     alert('Informațiile personale au fost (simulat) salvate!');
   };
 
@@ -75,7 +72,6 @@ function PersonalInfoForm() {
                             rows={2}
                         />
                     </Grid>
-                    {/* Adaugă mai multe câmpuri aici */}
                 </Grid>
                 <Button
                     type="submit"

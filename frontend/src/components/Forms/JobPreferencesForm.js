@@ -1,4 +1,3 @@
-// frontend/src/components/Forms/JobPreferencesForm.js
 import React, { useState } from 'react';
 import { Container, TextField, Button, Typography, Box, Paper, Grid, FormControl, InputLabel, Select, MenuItem, Checkbox, FormControlLabel, FormGroup } from '@mui/material';
 
@@ -6,10 +5,9 @@ function JobPreferencesForm() {
   const [formData, setFormData] = useState({
     preferredTitle: '',
     preferredLocation: '',
-    contractType: '', // Full-time, Part-time, Contract
+    contractType: '',
     remotePreference: false,
-    industries: [], // e.g., ['IT', 'Marketing', 'Finance']
-    // Adaugă alte câmpuri relevante
+    industries: [],
   });
 
    const contractTypes = ['Full-time', 'Part-time', 'Contract', 'Internship'];
@@ -35,7 +33,6 @@ function JobPreferencesForm() {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log('Job Preferences Submitted:', formData);
-    // Aici ai trimite datele către backend/Firestore etc.
     alert('Preferințele de job au fost (simulat) salvate!');
   };
 
@@ -106,7 +103,6 @@ function JobPreferencesForm() {
                                 value={formData.industries}
                                 onChange={handleIndustryChange}
                                 label="Industrii preferate"
-                                // renderValue={(selected) => selected.join(', ')}
                              >
                                  {availableIndustries.map((industry) => (
                                      <MenuItem key={industry} value={industry}>
@@ -116,7 +112,6 @@ function JobPreferencesForm() {
                              </Select>
                          </FormControl>
                      </Grid>
-                    {/* Adaugă mai multe câmpuri aici */}
                 </Grid>
                 <Button
                     type="submit"

@@ -23,15 +23,14 @@ function Dashboard() {
     setLoading(true);
 
     try {
-      // 1. Apelează scrapingul
       const scrapeRes = await fetch(`http://localhost:8000/api/scrape?keyword=${keyword}&location=${location}`);
       const scrapeData = await scrapeRes.json();
       console.log("Joburi extrase:", scrapeData);
 
-      // 2. Așteaptă puțin (dacă Firebase salvează asincron)
-      await new Promise((res) => setTimeout(res, 2000));
+      // Așteaptă puțin pentru sincronizare Firebase
+      await new Promise((res) => setTimeout(res, 1500));
 
-      // 3. Forțează reîncărcarea JobList
+      // Forțează reîncărcarea
       setReloadKey(prev => prev + 1);
     } catch (error) {
       console.error("Eroare la declanșarea scrapingului:", error);
@@ -42,8 +41,8 @@ function Dashboard() {
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4 }}>
-      <Typography variant="h4" gutterBottom>
-        Dashboard
+      <Typography variant="h4" gutterBottom fontWeight="bold">
+        Găsește Jobul Potrivit
       </Typography>
 
       {currentUser && (
@@ -52,7 +51,7 @@ function Dashboard() {
         </Typography>
       )}
 
-      <Box sx={{ display: 'flex', gap: 2, mt: 4, mb: 2 }}>
+      <Box sx={{ display: 'flex', gap: 2, mt: 4, mb: 2, flexWrap: 'wrap' }}>
         <TextField
           label="Cuvânt cheie"
           value={keyword}
@@ -65,7 +64,12 @@ function Dashboard() {
           onChange={(e) => setLocation(e.target.value)}
           size="small"
         />
-        <Button variant="contained" onClick={handleScrape} disabled={loading}>
+        <Button
+          variant="contained"
+          onClick={handleScrape}
+          disabled={loading}
+          sx={{ minWidth: "150px" }}
+        >
           {loading ? (
             <>
               <CircularProgress size={20} sx={{ mr: 1 }} />
@@ -77,7 +81,7 @@ function Dashboard() {
         </Button>
       </Box>
 
-      <Typography variant="h5" sx={{ mt: 4, mb: 2 }}>Joburi Salvate</Typography>
+      <Typography variant="h5" sx={{ mt: 4, mb: 2 }}>Rezultate</Typography>
       <JobList key={reloadKey} />
     </Container>
   );

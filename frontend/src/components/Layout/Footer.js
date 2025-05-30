@@ -1,4 +1,3 @@
-// frontend/src/components/Layout/Footer.js
 import React from 'react';
 import { Box, Typography, Container } from '@mui/material';
 
@@ -6,10 +5,10 @@ function Footer() {
   return (
     <Box
       sx={{
-        backgroundColor: 'primary.main', // Folosește culoarea primară din temă
+        backgroundColor: 'primary.main',
         color: 'white',
         p: 3,
-        mt: 'auto', // Împinge subsolul în jos dacă conținutul este scurt
+        mt: 'auto',
         textAlign: 'center',
       }}
       component="footer"

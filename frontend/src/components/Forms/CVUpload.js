@@ -1,4 +1,3 @@
-// frontend/src/components/Forms/CVUpload.js
 import React, { useState } from 'react';
 import { Container, Button, Typography, Box, Paper, Input } from '@mui/material';
 
@@ -19,13 +18,11 @@ function CVUpload() {
     setUploading(true);
     console.log('Uploading file:', selectedFile.name);
 
-    // Aici ai implementa logica reală de upload (ex: către Firebase Storage, un backend API)
-    // Aceasta este doar o simulare:
     setTimeout(() => {
         setUploading(false);
         alert(`Fișierul "${selectedFile.name}" a fost (simulat) încărcat!`);
-        setSelectedFile(null); // Resetează selecția
-    }, 2000); // Simulează timpul de încărcare
+        setSelectedFile(null);
+    }, 2000);
   };
 
   return (

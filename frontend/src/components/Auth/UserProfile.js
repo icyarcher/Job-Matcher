@@ -8,7 +8,6 @@ function UserProfile() {
   const { currentUser } = useAuth();
 
   if (!currentUser) {
-    // Această pagină ar trebui să fie protejată, dar facem o verificare de siguranță
     return <Typography>Nu ești autentificat.</Typography>;
   }
 
@@ -20,8 +19,6 @@ function UserProfile() {
       <Box sx={{ mb: 3 }}>
         <Typography variant="h6">Informații Cont:</Typography>
         <Typography variant="body1">Email: {currentUser.email}</Typography>
-        {/* Poți adăuga alte informații despre utilizator dacă sunt stocate în Firebase sau Firestore */}
-        {/* <Typography variant="body1">Nume: {currentUser.displayName}</Typography> */}
       </Box>
 
       <Box sx={{ mb: 3 }}>
@@ -39,13 +36,6 @@ function UserProfile() {
               Editează Profil / Formulare
           </Button>
       </Box>
-
-      {/* Poți adăuga secțiuni pentru joburi salvate, aplicări etc. */}
-      {/* <Box>
-          <Typography variant="h6">Joburi Salvate:</Typography>
-          // Lista joburi salvate
-      </Box> */}
-
     </Container>
   );
 }

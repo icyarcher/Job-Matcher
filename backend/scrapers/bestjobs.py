@@ -2,15 +2,13 @@ import json
 import unicodedata
 from playwright.sync_api import sync_playwright
 
-# Funcție pentru normalizarea textului (fără diacritice, lowercase)
 def normalize(text):
     return unicodedata.normalize("NFD", text.lower()).encode("ascii", "ignore").decode("utf-8")
 
 def scrape_bestjobs(keyword, location):
-    print(f"[INFO] Căutăm joburi BestJobs cu keyword: '{keyword}', location: '{location}'")
+    print(f"[INFO] Cautam joburi BestJobs cu keyword: '{keyword}', location: '{location}'")
     job_list = []
 
-    # Normalizăm keyword și locația o singură dată pentru comparații
     keyword_norm = normalize(keyword)
     location_norm = normalize(location)
 
@@ -28,7 +26,7 @@ def scrape_bestjobs(keyword, location):
         except:
             pass
 
-        # Scroll + click "Încarcă mai mult" dacă apare
+        # Scroll + click
         while True:
             try:
                 page.mouse.wheel(0, 3000)
@@ -36,7 +34,7 @@ def scrape_bestjobs(keyword, location):
 
                 load_more_button = page.locator('button:has-text("Încarcă mai mult")')
                 if load_more_button.is_visible():
-                    print("[INFO] Apăsăm pe 'Încarcă mai mult'...")
+                    print("[INFO] Apasam pe 'Incarcă mai mult'...")
                     load_more_button.click()
                     page.wait_for_timeout(2500)
                 else:
@@ -91,7 +89,7 @@ def scrape_bestjobs(keyword, location):
     with open("joburi_bestjobs_ALL.json", "w", encoding="utf-8") as f:
         json.dump(job_list, f, ensure_ascii=False, indent=4)
 
-    print(f"[INFO] Am salvat toate cele {len(job_list)} joburi în joburi_bestjobs_ALL.json")
+    print(f"[INFO] Am salvat toate cele {len(job_list)} joburi in joburi_bestjobs_ALL.json")
     return job_list
 
 if __name__ == "__main__":

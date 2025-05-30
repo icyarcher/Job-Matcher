@@ -9,7 +9,8 @@ import json
 import subprocess
 from pathlib import Path
 import sys
-
+import hashlib
+from services.firebase import db
 
 router = APIRouter()
 
@@ -28,12 +29,23 @@ def run_scrape_in_thread(target_fn, *args):
     thread.join()
     return results
 
+
+    # STERGE DIN FIREBASE INAINTE DE ORICE RUN
+def clear_jobs_collection():
+    jobs_ref = db.collection("jobs").stream()
+    for doc in jobs_ref:
+        doc.reference.delete()
+    print("[INFO] Toate joburile au fost sterse din Firebase.")
+
+
 @router.get("/scrape")
 def run_all_scrapers(keyword: str = Query(...), location: str = Query(...)):
     print(f"[INFO] Pornim scraping pentru: keyword={keyword}, location={location}")
+    clear_jobs_collection()
+
     jobs = []
 
-# Rulează scraper BestJobs
+# scraper BestJobs
     try:
         python_exec = sys.executable
         subprocess.run([python_exec, "scrapers/bestjobs_runner.py", keyword, location], check=True)
@@ -47,11 +59,10 @@ def run_all_scrapers(keyword: str = Query(...), location: str = Query(...)):
     except Exception as e:
         print("[ERROR] bestjobs subprocess:", e)
 
-    print(f"[INFO] Total joburi extrase: {len(jobs)}")
-
+# scraper hipo
     try:
         python_exec = sys.executable
-        subprocess.run([python_exec, "scrapers/hipo_runner.py", keyword], check=True)
+        subprocess.run([python_exec, "scrapers/hipo_runner.py", location ,keyword], check=True)
 
         path = Path("scrapers/joburi_brasov.json")
         if path.exists():
@@ -61,6 +72,19 @@ def run_all_scrapers(keyword: str = Query(...), location: str = Query(...)):
                 jobs += hipo_jobs
     except Exception as e:
         print("[ERROR] hipo subprocess:", e)
+
+# scraper ejobs
+    try:
+        python_exec = sys.executable
+        subprocess.run([python_exec, "scrapers/ejobs_runner.py", keyword, location], check=True)
+        path = Path("scrapers/joburi_ejobs.json")
+        if path.exists():
+            with open(path, "r", encoding="utf-8") as f:
+                ejobs = json.load(f)
+                print(f"[INFO] eJobs: {len(ejobs)} joburi")
+                jobs += ejobs
+    except Exception as e:
+        print("[ERROR] ejobs subprocess:", e)
 
     print(f"[INFO] Total joburi extrase: {len(jobs)}")
 
@@ -73,9 +97,24 @@ def run_all_scrapers(keyword: str = Query(...), location: str = Query(...)):
 
 #    print(f"[INFO] Total joburi extrase: {len(jobs)}")
 
+# salvare joburi daca sunt caractere speciale
     for job in jobs:
         try:
-            save_job(job)
+            link = job.get("link")
+            if not link:
+                print("[WARN] Job fara link, ignorat.")
+                continue
+
+            job_id = hashlib.sha256(link.encode()).hexdigest()
+            from services.firebase import db
+            job_ref = db.collection("jobs").document(job_id)
+
+            if not job_ref.get().exists:
+                job_ref.set(job)
+                print(f"[SAVE] Job salvat: {link}")
+            else:
+                print(f"[SKIP] Job deja salvat: {link}")
+
         except Exception as e:
             print("[ERROR] salvare job:", e)
 

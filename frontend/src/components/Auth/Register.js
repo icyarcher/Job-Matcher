@@ -24,10 +24,9 @@ function Register() {
       setError('');
       setLoading(true);
       await register(email, password);
-      // Poți naviga către o pagină de confirmare sau direct către dashboard
       navigate('/dashboard');
     } catch (err) {
-      setError('Failed to register. ' + err.message); // Afișează eroarea de la Firebase
+      setError('Failed to register. ' + err.message);
       console.error(err);
     }
     setLoading(false);
